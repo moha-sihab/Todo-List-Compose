@@ -1,4 +1,4 @@
-package com.mohasihab.todolistcompose
+package com.mohasihab.todolistcompose.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
