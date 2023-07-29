@@ -10,5 +10,5 @@ interface TodoTaskRepositoryContract {
 
     suspend fun deleteTask(todoTaskEntity: TodoTaskEntity)
 
-    fun getAllTask(): Flow<List<TodoTaskEntity>>
+    suspend fun getAllTask(): List<TodoTaskEntity>
 }

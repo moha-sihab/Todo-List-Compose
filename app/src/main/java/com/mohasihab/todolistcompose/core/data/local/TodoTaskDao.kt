@@ -22,7 +22,7 @@ interface TodoTaskDao {
     suspend fun deleteTask(todoTaskEntity: TodoTaskEntity)
 
     @Query("select * from table_todo")
-    fun getAllTask(): Flow<List<TodoTaskEntity>>
+    suspend fun getAllTask(): List<TodoTaskEntity>
 
 
 }

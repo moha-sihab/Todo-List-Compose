@@ -13,5 +13,5 @@ class TodoTaskRepository @Inject constructor(private val dao: TodoTaskDao) :
 
     override suspend fun deleteTask(todoTaskEntity: TodoTaskEntity) = dao.deleteTask(todoTaskEntity)
 
-    override fun getAllTask(): Flow<List<TodoTaskEntity>> = dao.getAllTask()
+    override suspend fun getAllTask():List<TodoTaskEntity> = dao.getAllTask()
 }
