@@ -13,4 +13,8 @@ interface TodoTaskUseCaseContract {
     suspend fun deleteTask(todoTask: TodoTaskModel)
 
     fun getAllTask(): Flow<ResultState<List<TodoTaskDisplayModel>>>
+
+    fun getTaskToday() : Flow<ResultState<List<TodoTaskDisplayModel>>>
+
+    fun getTaskNextMonth() : Flow<ResultState<List<TodoTaskDisplayModel>>>
 }

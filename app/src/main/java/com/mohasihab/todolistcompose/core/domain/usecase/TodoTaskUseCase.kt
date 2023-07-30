@@ -37,4 +37,30 @@ class TodoTaskUseCase @Inject constructor(private val repository: TodoTaskReposi
             }
         }
 
+    override fun getTaskToday(): Flow<ResultState<List<TodoTaskDisplayModel>>> =
+        flow {
+            try {
+                emit(ResultState.Loading())
+                val result = repository.getTaskToday()
+                emit(ResultState.Success(result.toMap()))
+
+            } catch (e: Throwable) {
+                emit(responseErrorToResultStateError(e))
+            }
+        }
+
+
+    override fun getTaskNextMonth(): Flow<ResultState<List<TodoTaskDisplayModel>>> =
+        flow {
+            try {
+                emit(ResultState.Loading())
+                val result = repository.getTaskNextMonth()
+                emit(ResultState.Success(result.toMap()))
+
+            } catch (e: Throwable) {
+                emit(responseErrorToResultStateError(e))
+            }
+        }
+
+
 }

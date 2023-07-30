@@ -3,7 +3,6 @@ package com.mohasihab.todolistcompose.core.data.repositories
 import com.mohasihab.todolistcompose.core.data.local.TodoTaskDao
 import com.mohasihab.todolistcompose.core.data.local.entity.TodoTaskEntity
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 
 class TodoTaskRepository @Inject constructor(private val dao: TodoTaskDao) :
     TodoTaskRepositoryContract {
@@ -13,5 +12,9 @@ class TodoTaskRepository @Inject constructor(private val dao: TodoTaskDao) :
 
     override suspend fun deleteTask(todoTaskEntity: TodoTaskEntity) = dao.deleteTask(todoTaskEntity)
 
-    override suspend fun getAllTask():List<TodoTaskEntity> = dao.getAllTask()
+    override suspend fun getAllTask(): List<TodoTaskEntity> = dao.getAllTask()
+
+    override suspend fun getTaskToday(): List<TodoTaskEntity> = dao.getTaskToday()
+
+    override suspend fun getTaskNextMonth(): List<TodoTaskEntity> = dao.getTaskNextMonth()
 }
