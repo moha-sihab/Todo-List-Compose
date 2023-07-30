@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.compose.ui.preview)
     implementation(libs.compose.material3)
     implementation(libs.compose.viewmodel)
+    implementation(libs.compose.constraint)
     implementation(libs.coil)
 
     implementation(libs.room.runtime)

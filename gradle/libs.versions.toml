@@ -4,7 +4,7 @@ androidxLifecycleKtx = "2.6.1"
 androidxActivityCompose = "1.7.2"
 androidxComposeBom = "2023.06.01"
 androidxEspresso = "3.5.1"
-coil = "2.3.0"
+coil = "2.4.0"
 gradle = "8.1.0"
 hilt = "2.45"
 hiltNavigationCompose = "1.0.0"
@@ -13,7 +13,8 @@ jetbrains = "1.8.10"
 junit = "4.13.2"
 junitTest = "1.1.5"
 room = "2.5.2"
-viewmodelCompose ='2.6.1'
+viewmodelCompose ="2.6.1"
+constraintCompose ="1.0.1"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -26,6 +27,7 @@ compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-viewmodel = {module="androidx.lifecycle:lifecycle-viewmodel-compose",version.ref="viewmodelCompose"}
+compose-constraint = {module="androidx.constraintlayout:constraintlayout-compose", version.ref="constraintCompose"}
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
