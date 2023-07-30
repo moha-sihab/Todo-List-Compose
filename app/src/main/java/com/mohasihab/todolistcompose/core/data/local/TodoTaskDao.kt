@@ -7,13 +7,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.mohasihab.todolistcompose.core.data.local.entity.TodoTaskEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoTaskDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTask(todoTaskEntity: TodoTaskEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun populateTask(todoTaskEntity: List<TodoTaskEntity>)
 
     @Update
     suspend fun updateTask(todoTaskEntity: TodoTaskEntity)

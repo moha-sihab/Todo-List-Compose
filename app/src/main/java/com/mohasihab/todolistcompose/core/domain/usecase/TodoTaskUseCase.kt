@@ -4,6 +4,7 @@ import com.mohasihab.todolistcompose.core.data.repositories.TodoTaskRepositoryCo
 import com.mohasihab.todolistcompose.core.domain.mapper.responseErrorToResultStateError
 import com.mohasihab.todolistcompose.core.domain.mapper.toMap
 import com.mohasihab.todolistcompose.core.domain.mapper.toTaskEntity
+import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
 import com.mohasihab.todolistcompose.core.utils.ResultState
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class TodoTaskUseCase @Inject constructor(private val repository: TodoTaskReposi
         repository.deleteTask(todoTask.toTaskEntity())
     }
 
-    override fun getAllTask(): Flow<ResultState<List<TodoTaskModel>>> =
+    override fun getAllTask(): Flow<ResultState<List<TodoTaskDisplayModel>>> =
         flow {
             try {
                 emit(ResultState.Loading())

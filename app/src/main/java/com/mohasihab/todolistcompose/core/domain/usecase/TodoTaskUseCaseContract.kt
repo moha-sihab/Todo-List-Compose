@@ -1,5 +1,6 @@
 package com.mohasihab.todolistcompose.core.domain.usecase
 
+import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
 import com.mohasihab.todolistcompose.core.utils.ResultState
 import kotlinx.coroutines.flow.Flow
@@ -11,5 +12,5 @@ interface TodoTaskUseCaseContract {
 
     suspend fun deleteTask(todoTask: TodoTaskModel)
 
-    fun getAllTask(): Flow<ResultState<List<TodoTaskModel>>>
+    fun getAllTask(): Flow<ResultState<List<TodoTaskDisplayModel>>>
 }
