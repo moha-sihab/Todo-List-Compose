@@ -14,6 +14,7 @@ junitTest = "1.1.5"
 room = "2.5.2"
 viewmodelCompose ="2.6.1"
 constraintCompose ="1.0.1"
+navigationCompose ="2.5.2"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -26,6 +27,7 @@ compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-viewmodel = {module="androidx.lifecycle:lifecycle-viewmodel-compose",version.ref="viewmodelCompose"}
 compose-constraint = {module="androidx.constraintlayout:constraintlayout-compose", version.ref="constraintCompose"}
+compose-navigation = {module="androidx.navigation:navigation-compose", version.ref="navigationCompose"}
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

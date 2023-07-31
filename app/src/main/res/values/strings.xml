@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Todo List Compose</string>
+    <string name="content_description_due_date">Due Date</string>
+    <string name="content_description_expand_description">Expand description</string>
+    <string name="content_description_delete_task">Delete task</string>
+    <string name="set_due_date">Set Due Date</string>
+    <string name="hint_title">Title</string>
+    <string name="inbound_description">Description</string>
+    <string name="content_description_back">back</string>
+    <string name="content_description_save">Save</string>
+    <string name="content_description_close">Close</string>
+    <string name="add_task">Add Task</string>
+    <string name="menu_today">Today</string>
+    <string name="menu_nextmonth">Next Month</string>
 </resources>

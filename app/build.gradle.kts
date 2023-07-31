@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.viewmodel)
     implementation(libs.compose.constraint)
+    implementation(libs.compose.navigation)
 
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
