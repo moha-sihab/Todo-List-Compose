@@ -4,7 +4,6 @@ androidxLifecycleKtx = "2.6.1"
 androidxActivityCompose = "1.7.2"
 androidxComposeBom = "2023.06.01"
 androidxEspresso = "3.5.1"
-coil = "2.4.0"
 gradle = "8.1.0"
 hilt = "2.45"
 hiltNavigationCompose = "1.0.0"
@@ -20,7 +19,6 @@ constraintCompose ="1.0.1"
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 lifeycle-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycleKtx" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
-coil = {module="io.coil-kt:coil-compose", version.ref="coil"}
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }

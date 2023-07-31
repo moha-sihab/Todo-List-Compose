@@ -13,7 +13,8 @@ fun TodoTaskEntity?.toTaskModel(): TodoTaskModel {
         title = this?.title ?: "",
         description = this?.description ?: "",
         duedate = this?.duedate ?: Date(),
-        colorlabel = this?.colorlabel ?: ""
+        colorlabel = this?.colorlabel ?: "",
+        done = this?.done ?: false
     )
 }
 
@@ -35,7 +36,8 @@ fun TodoTaskModel.toTaskEntity(): TodoTaskEntity {
         title = this.title,
         description = this.description,
         duedate = this.duedate,
-        colorlabel = this.colorlabel
+        colorlabel = this.colorlabel,
+        done = this.done
     )
 }
 

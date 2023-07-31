@@ -12,6 +12,7 @@ data class TodoTaskModel(
     val description: String,
     val duedate: Date,
     val colorlabel: String,
+    val done : Boolean
 ) : Parcelable
 
 
