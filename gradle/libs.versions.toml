@@ -12,9 +12,10 @@ jetbrains = "1.8.10"
 junit = "4.13.2"
 junitTest = "1.1.5"
 room = "2.5.2"
-viewmodelCompose ="2.6.1"
-constraintCompose ="1.0.1"
-navigationCompose ="2.5.2"
+viewmodelCompose = "2.6.1"
+constraintCompose = "1.0.1"
+navigationCompose = "2.5.2"
+sheetDialogCompose = "1.2.0"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -25,9 +26,9 @@ compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 compose-ui-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
-compose-viewmodel = {module="androidx.lifecycle:lifecycle-viewmodel-compose",version.ref="viewmodelCompose"}
-compose-constraint = {module="androidx.constraintlayout:constraintlayout-compose", version.ref="constraintCompose"}
-compose-navigation = {module="androidx.navigation:navigation-compose", version.ref="navigationCompose"}
+compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "viewmodelCompose" }
+compose-constraint = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintCompose" }
+compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
@@ -37,15 +38,17 @@ test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref =
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
-hilt-android = {module="com.google.dagger:hilt-android",version.ref="hilt"}
-hilt-compiler = {module="com.google.dagger:hilt-compiler",version.ref="hilt"}
-hilt-navigation-compose ={module="androidx.hilt:hilt-navigation-compose",version.ref="hiltNavigationCompose"}
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+sheets-dialog-core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "sheetDialogCompose" }
+sheets-dialog-module = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "sheetDialogCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle" }
 jetbrains-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt",version.ref="kotlin"}
-hilt = {id="com.google.dagger.hilt.android",version.ref="hilt"}
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 
 

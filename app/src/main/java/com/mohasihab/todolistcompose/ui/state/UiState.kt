@@ -1,4 +1,4 @@
-package com.mohasihab.todolistcompose.core.utils
+package com.mohasihab.todolistcompose.ui.state
 
 sealed class UiState<T>(val data: T? = null, val message: String? = null) {
     class Success<T>(data: T) : UiState<T>(data)

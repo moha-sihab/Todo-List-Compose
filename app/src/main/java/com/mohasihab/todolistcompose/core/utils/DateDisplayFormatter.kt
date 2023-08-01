@@ -69,6 +69,10 @@ object DateDisplayFormatter {
         return vDateResult
     }
 
+    fun Long.toDate(): Date {
+        return Date(this)
+    }
+
     fun stringDateDisplay(date: Date): String {
         val vDateFormat: SimpleDateFormat = SimpleDateFormat().formatterDisplayDate()
         var vDateResult = ""

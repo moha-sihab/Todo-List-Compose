@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mohasihab.todolistcompose"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.compose.viewmodel)
     implementation(libs.compose.constraint)
     implementation(libs.compose.navigation)
+
+    implementation(libs.sheets.dialog.core)
+    implementation(libs.sheets.dialog.module)
 
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)

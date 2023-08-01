@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
 import com.mohasihab.todolistcompose.core.domain.usecase.TodoTaskUseCaseContract
 import com.mohasihab.todolistcompose.core.utils.ResultState
-import com.mohasihab.todolistcompose.core.utils.UiState
+import com.mohasihab.todolistcompose.ui.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

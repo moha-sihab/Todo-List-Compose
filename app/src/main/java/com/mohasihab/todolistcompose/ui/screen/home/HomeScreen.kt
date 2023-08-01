@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mohasihab.todolistcompose.R
 import com.mohasihab.todolistcompose.ui.navigation.NavigationItem
 import com.mohasihab.todolistcompose.ui.navigation.Screen
+import com.mohasihab.todolistcompose.ui.screen.add.AddTodoScreen
 import com.mohasihab.todolistcompose.ui.screen.today.TodoListTodayScreen
 
 @Composable
@@ -46,10 +47,13 @@ fun HomeScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.TaskToday.route) {
-                TodoListTodayScreen(modifier = Modifier.padding(innerPadding))
+                TodoListTodayScreen(modifier = Modifier.padding(innerPadding), navController)
             }
             composable(Screen.TaskNextMonth.route) {
 
+            }
+            composable(Screen.AddTodo.route) {
+                AddTodoScreen(navController = navController)
             }
         }
     }
@@ -60,8 +64,8 @@ private fun BottomBar(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    NavigationBar(
-        modifier = modifier
+    BottomAppBar(
+        modifier = modifier,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -77,7 +81,7 @@ private fun BottomBar(
                 screen = Screen.TaskToday
             ),
         )
-        NavigationBar {
+        BottomAppBar {
 
             navigationItems.map { item ->
                 NavigationBarItem(

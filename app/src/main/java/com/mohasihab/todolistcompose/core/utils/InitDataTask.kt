@@ -18,70 +18,80 @@ object InitDataTask {
                 title = "You have meeting with client A",
                 description = description,
                 duedate = nextMonth,
-                colorlabel = "blue"
+                colorlabel = "blue",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 2,
                 title = "You have meeting with client 2",
                 description = description,
                 duedate = today,
-                colorlabel = "orange"
+                colorlabel = "orange",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 3,
                 title = "You have meeting with client C",
                 description = description,
                 duedate = today,
-                colorlabel = "green"
+                colorlabel = "green",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 4,
                 title = "You have meeting with client D",
                 description = description,
                 duedate = today,
-                colorlabel = "blue"
+                colorlabel = "blue",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 5,
                 title = "You have meeting with client E",
                 description = description,
                 duedate = nextMonth,
-                colorlabel = "green"
+                colorlabel = "green",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 6,
                 title = "You have meeting with client F",
                 description = description,
                 duedate = today,
-                colorlabel = "blue"
+                colorlabel = "blue",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 7,
                 title = "Watching Juventus vs AC Milan",
                 description = description,
                 duedate = nextMonth,
-                colorlabel = "green"
+                colorlabel = "green",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 8,
                 title = "You have meeting with client x",
                 description = description,
                 duedate = nextMonth,
-                colorlabel = "blue"
+                colorlabel = "blue",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 9,
                 title = "Interview with C Level",
                 description = description,
                 duedate = today,
-                colorlabel = "orange"
+                colorlabel = "orange",
+                done = false,
             ),
             TodoTaskEntity(
                 id = 10,
                 title = "You have meeting with client Z",
                 description = description,
                 duedate = today,
-                colorlabel = "blue"
+                colorlabel = "blue",
+                done = false,
             ),
         )
     }

@@ -15,11 +15,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,28 +35,53 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.mohasihab.todolistcompose.R
 import com.mohasihab.todolistcompose.core.domain.model.CardColorModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
 import com.mohasihab.todolistcompose.core.utils.Converter
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.toDefaultDisplay
-import com.mohasihab.todolistcompose.core.utils.UiState
+import com.mohasihab.todolistcompose.ui.state.UiState
 import com.mohasihab.todolistcompose.ui.component.AppTopBar
+import com.mohasihab.todolistcompose.ui.navigation.Screen
 import com.mohasihab.todolistcompose.ui.theme.Spacing
 import java.util.Calendar
 
 @Composable
 fun TodoListTodayScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: TodoListTodayViewModel = hiltViewModel(),
 ) {
 
     Scaffold(
-        topBar = { AppTopBar(titleTopBar = "") }
-    ) { it ->
+        topBar = { AppTopBar(titleTopBar = "") },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    Screen.AddTodo.route?.let {
+                        navController.navigate(it) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                    Screen.AddTodo.route?.let { navController.navigate(it) }
+                },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
+            }
+        },
+    ) {
         viewModel.getListTodayUiState()
             .collectAsState(initial = UiState.Loading()).value.let { uiState ->
             when (uiState) {
@@ -140,7 +167,7 @@ fun TodoListTodayItem(modifier: Modifier = Modifier, data: TodoTaskDisplayModel)
             Icon(
                 modifier = Modifier.weight(0.2f, fill = true),
                 imageVector = Icons.Default.Delete,
-                contentDescription = null
+                contentDescription = stringResource(R.string.content_description_delete_task)
             )
         }
 
@@ -186,7 +213,7 @@ fun TodoListTodayItem(modifier: Modifier = Modifier, data: TodoTaskDisplayModel)
                             expand = !expand
                         },
                     imageVector = iconExpand,
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.content_description_expand_description)
                 )
             }
         }
@@ -204,7 +231,8 @@ fun TodoListTodayPreview() {
             title = "You Have A meeting sfdsf sfsdfsd sdfsdf sfsdf",
             description = "Lorem ipsum ipsum Lorem ipsum ipsum Lorem ipsum ipsumLorem ipsum ipsum Lorem ipsum ipsum Lorem ipsum ipsumLorem ipsum ipsum Lorem ipsum ipsum",
             duedate = Converter.toDate(Calendar.getInstance().timeInMillis)!!,
-            colorlabel = "blue"
+            colorlabel = "blue",
+            done = true
         )
         val todoDisplay = TodoTaskDisplayModel(
             todoTask = todos,
@@ -227,7 +255,8 @@ fun PreviewLessThan40() {
             title = "You Have A meeting sfdsf sfsdfsd sdfsdf sfsdf",
             description = "Lorem ipsum ipsum Lorem",
             duedate = Converter.toDate(Calendar.getInstance().timeInMillis)!!,
-            colorlabel = "blue"
+            colorlabel = "blue",
+            done = false
         )
         val todoDisplay = TodoTaskDisplayModel(
             todoTask = todos,
