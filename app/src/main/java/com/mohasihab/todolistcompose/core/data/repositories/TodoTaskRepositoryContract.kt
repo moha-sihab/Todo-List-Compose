@@ -15,4 +15,6 @@ interface TodoTaskRepositoryContract {
     suspend fun getTaskToday(): List<TodoTaskEntity>
 
     suspend fun getTaskNextMonth(): List<TodoTaskEntity>
+
+    suspend fun getTaskById(id : Int) : TodoTaskEntity
 }

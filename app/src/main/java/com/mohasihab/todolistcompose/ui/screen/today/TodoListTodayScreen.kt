@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
@@ -79,6 +78,7 @@ fun TodoListTodayScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: TodoListTodayViewModel = hiltViewModel(),
+    navigateToUpdate: (String) -> Unit,
 ) {
 
     TodoListComposeTheme {
@@ -121,7 +121,8 @@ fun TodoListTodayScreen(
                             TodoListTodayContent(
                                 paddingValues = it,
                                 todoList = uiState.data ?: mutableListOf(),
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navigateToUpdate = navigateToUpdate
                             )
 
                         }
@@ -145,6 +146,7 @@ fun TodoListTodayContent(
     paddingValues: PaddingValues,
     todoList: List<TodoTaskDisplayModel>,
     viewModel: TodoListTodayViewModel,
+    navigateToUpdate: (String) -> Unit,
 ) {
     val listState = rememberLazyListState()
     LazyColumn(
@@ -158,7 +160,8 @@ fun TodoListTodayContent(
             TodoTodaySwipeLayout(
                 data = data,
                 viewModel::deleteTodoList,
-                viewModel::checkDoneTodoList
+                viewModel::checkDoneTodoList,
+                navigateToUpdate
             )
         }
     }
@@ -170,6 +173,7 @@ fun TodoTodaySwipeLayout(
     data: TodoTaskDisplayModel,
     onRemove: (TodoTaskModel) -> Unit,
     onCheckDOne: (TodoTaskModel) -> Unit,
+    navigateToUpdate: (String) -> Unit,
 ) {
     var show by remember { mutableStateOf(true) }
     var deleteAction by remember { mutableStateOf(false) }
@@ -199,7 +203,7 @@ fun TodoTodaySwipeLayout(
                 SwipeBackground(dismissState = dismissState)
             },
             dismissContent = {
-                TodoListTodayItem(data = data)
+                TodoListTodayItem(data = data, navigateToUpdate)
             }
         )
     }
@@ -218,10 +222,16 @@ fun TodoTodaySwipeLayout(
 }
 
 @Composable
-fun TodoListTodayItem(data: TodoTaskDisplayModel) {
+fun TodoListTodayItem(
+    data: TodoTaskDisplayModel,
+    navigateToUpdate: (String) -> Unit,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                navigateToUpdate(data.todoTask.id.toString())
+            }
             .heightIn(min = 60.dp)
             .padding(start = Spacing().medium, end = Spacing().medium, top = Spacing().small),
         shape = RoundedCornerShape(8.dp),
@@ -257,11 +267,7 @@ fun TodoListTodayItem(data: TodoTaskDisplayModel) {
                 style = MaterialTheme.typography.bodyLarge,
                 softWrap = true,
             )
-            Icon(
-                modifier = Modifier.weight(0.2f, fill = true),
-                imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(R.string.content_description_delete_task)
-            )
+
         }
 
         Text(
@@ -385,29 +391,3 @@ fun TodoListTodayHeader(totalTask: Int) {
         }
     }
 }
-
-/*
-@Preview(showSystemUi = true)
-@Composable
-fun TodoListTodayPreview() {
-    MaterialTheme {
-        val todos = TodoTaskModel(
-            id = 4762,
-            title = "You Have A meeting sfdsf sfsdfsd sdfsdf sfsdf",
-            description = "Lorem ipsum ipsum Lorem",
-            duedate = Converter.toDate(Calendar.getInstance().timeInMillis)!!,
-            colorlabel = "blue",
-            done = false
-        )
-        val todoDisplay = TodoTaskDisplayModel(
-            todoTask = todos,
-            cardColorModel = CardColorModel(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            )
-        )
-        val todoList: MutableList<TodoTaskDisplayModel> = mutableListOf()
-        todoList.add(todoDisplay)
-        TodoListTodayContent(paddingValues = PaddingValues(16.dp), todoList = todoList)
-    }
-}*/

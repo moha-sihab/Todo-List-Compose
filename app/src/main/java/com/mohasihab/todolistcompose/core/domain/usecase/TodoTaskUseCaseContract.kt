@@ -17,4 +17,6 @@ interface TodoTaskUseCaseContract {
     fun getTaskToday() : Flow<ResultState<List<TodoTaskDisplayModel>>>
 
     fun getTaskNextMonth() : Flow<ResultState<List<TodoTaskDisplayModel>>>
+
+    fun getTaskById(id : Int) : Flow<ResultState<TodoTaskDisplayModel>>
 }

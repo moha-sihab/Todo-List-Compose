@@ -1,5 +1,6 @@
-package com.mohasihab.todolistcompose.ui.screen.add
+package com.mohasihab.todolistcompose.ui.screen.Update
 
+import android.util.Log
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -22,7 +23,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -46,14 +46,15 @@ import java.util.Date
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTodoScreen(
+fun UpdateTodoScreen(
     navController: NavController,
-    viewmodel: AddTodoViewModel = hiltViewModel(),
+    viewmodel: UpdateTodoViewModel = hiltViewModel(),
+    id: String,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    viewmodel.getTaskById(id)
     Scaffold(
         topBar = {
             AppTopBar(
@@ -63,7 +64,7 @@ fun AddTodoScreen(
                 onSaveClick = { viewmodel.onEvent(AddTodoEvent.SaveTodo) })
         }
     ) { it ->
-        AddTodoContent(
+        UpdateTodoContent(
             paddingValues = it,
             viewmodel,
             navController = navController,
@@ -74,13 +75,13 @@ fun AddTodoScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTodoContent(
+fun UpdateTodoContent(
     paddingValues: PaddingValues,
-    viewmodel: AddTodoViewModel,
+    viewmodel: UpdateTodoViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
-    val colorLabel = viewmodel.addUpdateTodoState.colorLabel
+    val colorLabel = viewmodel.updateDateTodoState.colorLabel
     val containerAnimatable = remember {
         Animatable(
             colorLabel.toTaskColor().containerColor
@@ -94,8 +95,9 @@ fun AddTodoContent(
 
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(viewmodel.addUpdateTodoState.actionStatus) {
-        viewmodel.addUpdateTodoState.uiState.collectLatest { uiState ->
+    LaunchedEffect(viewmodel.updateDateTodoState.actionStatus) {
+        Log.d("addTodo=", "actionStatus=" + viewmodel.updateDateTodoState.actionStatus.toString())
+        viewmodel.updateDateTodoState.uiState.collectLatest { uiState ->
             when (uiState) {
                 is UiState.Success -> {
                     navController.navigate(Screen.TaskToday.route)
@@ -152,7 +154,7 @@ fun AddTodoContent(
         ) {
             DueDate(
                 modifier = Modifier.weight(0.5f),
-                dateDisplay = viewmodel.addUpdateTodoState.dueDateDisplay,
+                dateDisplay = viewmodel.updateDateTodoState.dueDateDisplay,
                 contentColor = contentAnimatable.value,
                 onClick = {
                     calendarState.show()
@@ -178,8 +180,8 @@ fun AddTodoContent(
         }
 
         TextInput(
-            text = viewmodel.addUpdateTodoState.title,
-            hint = stringResource(R.string.hint_title),
+            text = viewmodel.updateDateTodoState.title,
+            hint = "",
             onFocusChange = {
                 viewmodel.onEvent(AddTodoEvent.ChangeTitleFocus(it))
             },
@@ -188,13 +190,13 @@ fun AddTodoContent(
             },
             singleLine = true,
             textStyle = MaterialTheme.typography.titleMedium.copy(color = contentAnimatable.value),
-            isHintVisible = viewmodel.addUpdateTodoState.hintTitleVisibility
+            isHintVisible = viewmodel.updateDateTodoState.hintTitleVisibility
         )
 
         TextInput(
-            text = viewmodel.addUpdateTodoState.description,
+            text = viewmodel.updateDateTodoState.description,
             modifier = Modifier.fillMaxHeight(),
-            hint = stringResource(R.string.description),
+            hint = "",
             onFocusChange = {
                 viewmodel.onEvent(AddTodoEvent.ChangeDescriptionFocus(it))
             },
@@ -202,19 +204,9 @@ fun AddTodoContent(
                 viewmodel.onEvent(AddTodoEvent.InputDescription(it))
             },
             textStyle = MaterialTheme.typography.bodySmall.copy(color = contentAnimatable.value),
-            isHintVisible = viewmodel.addUpdateTodoState.hintDescriptionVisibility
+            isHintVisible = viewmodel.updateDateTodoState.hintDescriptionVisibility
         )
 
 
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun AddTodoContentPreview() {
-    /*  MaterialTheme {
-          Surface {
-              AddTodoScreen()
-          }
-      }*/
 }

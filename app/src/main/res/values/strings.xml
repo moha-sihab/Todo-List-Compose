@@ -5,7 +5,7 @@
     <string name="content_description_delete_task">Delete task</string>
     <string name="set_due_date">Set Due Date</string>
     <string name="hint_title">Title</string>
-    <string name="inbound_description">Description</string>
+    <string name="description">Description</string>
     <string name="content_description_back">back</string>
     <string name="content_description_save">Save</string>
     <string name="content_description_close">Close</string>

@@ -32,4 +32,7 @@ interface TodoTaskDao {
     @Query("select  *  from table_todo where  strftime('%m', datetime(duedate/1000, 'unixepoch','localtime')) =  strftime('%m',datetime('now', 'localtime', '+1 month'))  and done=0 order by id desc")
     suspend fun getTaskNextMonth(): List<TodoTaskEntity>
 
+    @Query("select * from table_todo where id=:id")
+    suspend fun getTaskById(id : Int) : TodoTaskEntity
+
 }

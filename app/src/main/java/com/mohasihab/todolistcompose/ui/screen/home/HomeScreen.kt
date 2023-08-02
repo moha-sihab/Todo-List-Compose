@@ -19,13 +19,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.mohasihab.todolistcompose.R
 import com.mohasihab.todolistcompose.ui.navigation.NavigationItem
 import com.mohasihab.todolistcompose.ui.navigation.Screen
+import com.mohasihab.todolistcompose.ui.screen.Update.UpdateTodoContent
+import com.mohasihab.todolistcompose.ui.screen.Update.UpdateTodoScreen
 import com.mohasihab.todolistcompose.ui.screen.add.AddTodoScreen
 import com.mohasihab.todolistcompose.ui.screen.history.TodoListHistoryScreen
 import com.mohasihab.todolistcompose.ui.screen.nextmonth.TodoListNextMonthScreen
@@ -56,7 +60,12 @@ fun HomeScreen(
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable(Screen.TaskToday.route) {
-                    TodoListTodayScreen(modifier = Modifier.padding(innerPadding), navController)
+                    TodoListTodayScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        navController,
+                        navigateToUpdate = {
+                            id -> navController.navigate(Screen.UpdateTodo.createRoute(id))
+                        })
                 }
                 composable(Screen.TaskNextMonth.route) {
                     TodoListNextMonthScreen(
@@ -72,6 +81,13 @@ fun HomeScreen(
                 }
                 composable(Screen.AddTodo.route) {
                     AddTodoScreen(navController = navController)
+                }
+                composable(
+                    route = Screen.UpdateTodo.route,
+                    arguments = listOf(navArgument("id") {type = NavType.StringType}),
+                ){
+                    val idData = it.arguments?.getString("id") ?: ""
+                    UpdateTodoScreen(navController = navController, id = idData)
                 }
             }
         }

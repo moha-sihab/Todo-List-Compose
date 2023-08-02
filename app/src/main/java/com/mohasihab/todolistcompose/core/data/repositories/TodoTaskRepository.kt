@@ -17,4 +17,5 @@ class TodoTaskRepository @Inject constructor(private val dao: TodoTaskDao) :
     override suspend fun getTaskToday(): List<TodoTaskEntity> = dao.getTaskToday()
 
     override suspend fun getTaskNextMonth(): List<TodoTaskEntity> = dao.getTaskNextMonth()
+    override suspend fun getTaskById(id: Int): TodoTaskEntity = dao.getTaskById(id = id)
 }

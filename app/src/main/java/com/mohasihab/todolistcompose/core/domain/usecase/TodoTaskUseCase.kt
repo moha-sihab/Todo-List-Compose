@@ -3,6 +3,7 @@ package com.mohasihab.todolistcompose.core.domain.usecase
 import com.mohasihab.todolistcompose.core.data.repositories.TodoTaskRepositoryContract
 import com.mohasihab.todolistcompose.core.domain.mapper.responseErrorToResultStateError
 import com.mohasihab.todolistcompose.core.domain.mapper.toMap
+import com.mohasihab.todolistcompose.core.domain.mapper.toTaskDisplay
 import com.mohasihab.todolistcompose.core.domain.mapper.toTaskEntity
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
@@ -62,5 +63,15 @@ class TodoTaskUseCase @Inject constructor(private val repository: TodoTaskReposi
             }
         }
 
+    override fun getTaskById(id: Int): Flow<ResultState<TodoTaskDisplayModel>> =
+        flow {
+            try {
+                emit(ResultState.Loading())
+                val result = repository.getTaskById(id)
+                emit(ResultState.Success(result.toTaskDisplay()))
+            } catch (e: Throwable) {
+                emit(responseErrorToResultStateError(e))
+            }
+        }
 
 }

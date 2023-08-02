@@ -11,6 +11,7 @@ sealed class AddTodoEvent {
     data class InputColorLabel(val value: String) : AddTodoEvent()
     data class InputDueDate(val value: Date) : AddTodoEvent()
     data class ChangeColor(val value: String) : AddTodoEvent()
+    data class InputId(val value : Int) : AddTodoEvent()
 
     object SaveTodo : AddTodoEvent()
 }

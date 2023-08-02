@@ -4,6 +4,7 @@ import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class AddUpdateTodoState(
+    val id : Int = 0,
     val title : String = "",
     val description : String = "",
     val dueDate : Date = Date(),
