@@ -7,6 +7,7 @@ Todo List App using Jetpack Compose
 - Room
 - Version Catalogs
 - Coroutines
+- Pre-Populated Database
 
 ![screenshot](https://github.com/moha-sihab/Todo-List-Compose/blob/master/Demo/video_demo.gif?raw=true)
   
