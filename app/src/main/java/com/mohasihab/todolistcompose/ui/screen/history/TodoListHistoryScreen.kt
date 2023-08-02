@@ -1,10 +1,8 @@
-package com.mohasihab.todolistcompose.ui.screen.nextmonth
+package com.mohasihab.todolistcompose.ui.screen.history
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,17 +25,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,41 +45,39 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mohasihab.todolistcompose.R
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
-import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getDayName
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getDayOfMonth
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getMonthName
 import com.mohasihab.todolistcompose.ui.component.AppTopBar
-import com.mohasihab.todolistcompose.ui.component.SwipeBackground
 import com.mohasihab.todolistcompose.ui.state.UiState
 import com.mohasihab.todolistcompose.ui.theme.Spacing
 import com.mohasihab.todolistcompose.ui.theme.TodoListComposeTheme
 
 @Composable
-fun TodoListNextMonthScreen(
+fun TodoListHistoryScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: TodoListNextMonthViewModel = hiltViewModel(),
+    viewModel: TodoListHistoryViewModel = hiltViewModel(),
 ) {
 
     TodoListComposeTheme {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    titleTopBar = stringResource(R.string.app_bar_next_month_title)
+                    titleTopBar = stringResource(R.string.app_bar_history_title)
                 )
             },
             containerColor = MaterialTheme.colorScheme.background,
         ) {
-            viewModel.getListNextMonthUiState()
+            viewModel.getListHistoryUiState()
                 .collectAsState(initial = UiState.Loading()).value.let { uiState ->
                     when (uiState) {
                         is UiState.Loading -> {
-                            viewModel.getTodoListNextMonth()
+                            viewModel.getTodoListHistory()
                         }
 
                         is UiState.Success -> {
-                            TodoListNextMonthContent(
+                            TodoListHistoryContent(
                                 paddingValues = it,
                                 todoList = uiState.data ?: mutableListOf(),
                                 viewModel = viewModel
@@ -108,64 +99,11 @@ fun TodoListNextMonthScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoNextMonthSwipeLayout(
-    data: TodoTaskDisplayModel,
-    onRemove: (TodoTaskModel) -> Unit,
-    onCheckDOne: (TodoTaskModel) -> Unit,
-) {
-    var show by remember { mutableStateOf(true) }
-    var deleteAction by remember { mutableStateOf(false) }
-    var checkDoneAction by remember { mutableStateOf(false) }
-    val dismissState = rememberDismissState(
-        confirmValueChange = {
-            if (it == DismissValue.DismissedToEnd) {
-                deleteAction = true
-                checkDoneAction = false
-                show = false
-                true
-            } else if (it == DismissValue.DismissedToStart) {
-                deleteAction = false
-                checkDoneAction = true
-                show = false
-                true
-            } else false
-        }, positionalThreshold = { 150.dp.toPx() }
-    )
-    AnimatedVisibility(
-        show, exit = fadeOut(spring())
-    ) {
-        SwipeToDismiss(
-            state = dismissState,
-            modifier = Modifier,
-            background = {
-                SwipeBackground(dismissState = dismissState)
-            },
-            dismissContent = {
-                TodoListNextMonthItem(data = data)
-            }
-        )
-    }
-
-    LaunchedEffect(key1 = deleteAction) {
-        if (deleteAction) {
-            onRemove(data.todoTask)
-        }
-    }
-
-    LaunchedEffect(key1 = checkDoneAction) {
-        if (checkDoneAction) {
-            onCheckDOne(data.todoTask.copy(done = true))
-        }
-    }
-}
-
-@Composable
-fun TodoListNextMonthContent(
+fun TodoListHistoryContent(
     paddingValues: PaddingValues,
     todoList: List<TodoTaskDisplayModel>,
-    viewModel: TodoListNextMonthViewModel,
+    viewModel: TodoListHistoryViewModel,
 ) {
     val listState = rememberLazyListState()
     LazyColumn(
@@ -173,17 +111,13 @@ fun TodoListNextMonthContent(
         state = listState
     ) {
         items(todoList, key = { it.todoTask.id }) { data ->
-            TodoNextMonthSwipeLayout(
-                data = data,
-                viewModel::deleteTodoList,
-                viewModel::checkDoneTodoList
-            )
+            TodoListHistoryItem(data = data)
         }
     }
 }
 
 @Composable
-fun TodoListNextMonthItem(data: TodoTaskDisplayModel) {
+fun TodoListHistoryItem(data: TodoTaskDisplayModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -309,30 +243,3 @@ fun TodoListNextMonthItem(data: TodoTaskDisplayModel) {
         }
     }
 }
-/*
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewNextMonth() {
-    MaterialTheme {
-        val todos = TodoTaskModel(
-            id = 4762,
-            title = "You Have A meeting sfdsf sfsdfsd sdfsdf sfsdf",
-            description = "Lorem ipsum ipsum Lorem",
-            duedate = Converter.toDate(Calendar.getInstance().timeInMillis)!!,
-            colorlabel = "blue",
-            done = false
-        )
-        val todoDisplay = TodoTaskDisplayModel(
-            todoTask = todos,
-            cardColorModel = CardColorModel(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            )
-        )
-        val todoList: MutableList<TodoTaskDisplayModel> = mutableListOf()
-        todoList.add(todoDisplay)
-        TodoListNextMonthContent(paddingValues = PaddingValues(16.dp), todoList = todoList)
-
-    }
-}*/

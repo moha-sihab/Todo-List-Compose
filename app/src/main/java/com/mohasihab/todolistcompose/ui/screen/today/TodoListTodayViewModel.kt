@@ -3,6 +3,7 @@ package com.mohasihab.todolistcompose.ui.screen.today
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
+import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
 import com.mohasihab.todolistcompose.core.domain.usecase.TodoTaskUseCaseContract
 import com.mohasihab.todolistcompose.core.utils.ResultState
 import com.mohasihab.todolistcompose.ui.state.UiState
@@ -50,6 +51,18 @@ class TodoListTodayViewModel @Inject constructor(private val useCase: TodoTaskUs
                     }
                 }
             }
+        }
+    }
+
+    fun deleteTodoList(data: TodoTaskModel) {
+        viewModelScope.launch {
+            useCase.deleteTask(data)
+        }
+    }
+
+    fun checkDoneTodoList(data: TodoTaskModel) {
+        viewModelScope.launch {
+            useCase.updateTask(data)
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,7 @@ import com.mohasihab.todolistcompose.R
 import com.mohasihab.todolistcompose.ui.navigation.NavigationItem
 import com.mohasihab.todolistcompose.ui.navigation.Screen
 import com.mohasihab.todolistcompose.ui.screen.add.AddTodoScreen
+import com.mohasihab.todolistcompose.ui.screen.history.TodoListHistoryScreen
 import com.mohasihab.todolistcompose.ui.screen.nextmonth.TodoListNextMonthScreen
 import com.mohasihab.todolistcompose.ui.screen.today.TodoListTodayScreen
 import com.mohasihab.todolistcompose.ui.theme.TodoListComposeTheme
@@ -62,6 +64,12 @@ fun HomeScreen(
                         navController = navController,
                     )
                 }
+                composable(Screen.History.route) {
+                    TodoListHistoryScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                    )
+                }
                 composable(Screen.AddTodo.route) {
                     AddTodoScreen(navController = navController)
                 }
@@ -92,6 +100,11 @@ private fun BottomBar(
                 title = stringResource(R.string.menu_nextmonth),
                 icon = Icons.Default.KeyboardArrowRight,
                 screen = Screen.TaskNextMonth
+            ),
+            NavigationItem(
+                title = stringResource(R.string.menu_history),
+                icon = Icons.Default.Star,
+                screen = Screen.History
             ),
         )
         BottomAppBar(

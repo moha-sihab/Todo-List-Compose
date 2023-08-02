@@ -1,8 +1,10 @@
 package com.mohasihab.todolistcompose.ui.screen.today
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,13 +28,18 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,13 +50,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.mohasihab.todolistcompose.R
-import com.mohasihab.todolistcompose.core.domain.model.CardColorModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskModel
 import com.mohasihab.todolistcompose.core.utils.Converter
@@ -58,10 +63,12 @@ import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getDayOfMon
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getMonthName
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.toDefaultDisplay
 import com.mohasihab.todolistcompose.ui.component.AppTopBar
+import com.mohasihab.todolistcompose.ui.component.SwipeBackground
 import com.mohasihab.todolistcompose.ui.navigation.Screen
 import com.mohasihab.todolistcompose.ui.state.UiState
 import com.mohasihab.todolistcompose.ui.theme.Spacing
 import com.mohasihab.todolistcompose.ui.theme.TodoListComposeTheme
+import com.mohasihab.todolistcompose.ui.theme.light_GreenContainer
 import com.mohasihab.todolistcompose.ui.theme.md_theme_light_secondary
 import java.util.Calendar
 
@@ -94,8 +101,8 @@ fun TodoListTodayScreen(
                         }
                         Screen.AddTodo.route?.let { navController.navigate(it) }
                     },
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.background
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
                 }
@@ -111,7 +118,8 @@ fun TodoListTodayScreen(
                         is UiState.Success -> {
                             TodoListTodayContent(
                                 paddingValues = it,
-                                todoList = uiState.data ?: mutableListOf()
+                                todoList = uiState.data ?: mutableListOf(),
+                                viewModel = viewModel
                             )
 
                         }
@@ -131,7 +139,11 @@ fun TodoListTodayScreen(
 }
 
 @Composable
-fun TodoListTodayContent(paddingValues: PaddingValues, todoList: List<TodoTaskDisplayModel>) {
+fun TodoListTodayContent(
+    paddingValues: PaddingValues,
+    todoList: List<TodoTaskDisplayModel>,
+    viewModel: TodoListTodayViewModel,
+) {
     val listState = rememberLazyListState()
     LazyColumn(
         modifier = Modifier.padding(paddingValues),
@@ -141,7 +153,64 @@ fun TodoListTodayContent(paddingValues: PaddingValues, todoList: List<TodoTaskDi
             TodoListTodayHeader(totalTask = todoList.size)
         }
         items(todoList, key = { it.todoTask.id }) { data ->
-            TodoListTodayItem(data = data)
+            TodoTodaySwipeLayout(
+                data = data,
+                viewModel::deleteTodoList,
+                viewModel::checkDoneTodoList
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TodoTodaySwipeLayout(
+    data: TodoTaskDisplayModel,
+    onRemove: (TodoTaskModel) -> Unit,
+    onCheckDOne: (TodoTaskModel) -> Unit,
+) {
+    var show by remember { mutableStateOf(true) }
+    var deleteAction by remember { mutableStateOf(false) }
+    var checkDoneAction by remember { mutableStateOf(false) }
+    val dismissState = rememberDismissState(
+        confirmValueChange = {
+            if (it == DismissValue.DismissedToEnd) {
+                deleteAction = true
+                checkDoneAction = false
+                show = false
+                true
+            } else if (it == DismissValue.DismissedToStart) {
+                deleteAction = false
+                checkDoneAction = true
+                show = false
+                true
+            } else false
+        }, positionalThreshold = { 150.dp.toPx() }
+    )
+    AnimatedVisibility(
+        show, exit = fadeOut(spring())
+    ) {
+        SwipeToDismiss(
+            state = dismissState,
+            modifier = Modifier,
+            background = {
+                SwipeBackground(dismissState = dismissState)
+            },
+            dismissContent = {
+                TodoListTodayItem(data = data)
+            }
+        )
+    }
+
+    LaunchedEffect(key1 = deleteAction) {
+        if (deleteAction) {
+            onRemove(data.todoTask)
+        }
+    }
+
+    LaunchedEffect(key1 = checkDoneAction) {
+        if (checkDoneAction) {
+            onCheckDOne(data.todoTask.copy(done = true))
         }
     }
 }
@@ -255,12 +324,12 @@ fun TodoListTodayHeader(totalTask: Int) {
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = md_theme_light_secondary,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            contentColor = light_GreenContainer
         )
     ) {
-        val dayName = Converter.toDate(Calendar.getInstance().timeInMillis)?.getDayName()!!
-        val monthName = Converter.toDate(Calendar.getInstance().timeInMillis)?.getMonthName()!!
-        val todayDate = Converter.toDate(Calendar.getInstance().timeInMillis)?.getDayOfMonth()!!
+        val dayName = Converter.toDate(Calendar.getInstance().timeInMillis)?.getDayName() ?: ""
+        val monthName = Converter.toDate(Calendar.getInstance().timeInMillis)?.getMonthName() ?: ""
+        val todayDate = Converter.toDate(Calendar.getInstance().timeInMillis)?.getDayOfMonth() ?: ""
 
         Row(
             modifier = Modifier
@@ -291,7 +360,7 @@ fun TodoListTodayHeader(totalTask: Int) {
             }
 
             Divider(
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                color = light_GreenContainer,
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(1.dp)
@@ -301,12 +370,12 @@ fun TodoListTodayHeader(totalTask: Int) {
                 horizontalAlignment = Alignment.Start,
             ) {
                 Text(
-                    text = "You Have",
+                    text = stringResource(R.string.you_have),
                     style = MaterialTheme.typography.headlineMedium,
                     softWrap = true,
                 )
                 Text(
-                    text = "$totalTask task(s)",
+                    text = stringResource(R.string.total_task, totalTask),
                     style = MaterialTheme.typography.headlineLarge,
                     softWrap = true,
                 )
@@ -314,34 +383,11 @@ fun TodoListTodayHeader(totalTask: Int) {
         }
     }
 }
+
 /*
 @Preview(showSystemUi = true)
 @Composable
 fun TodoListTodayPreview() {
-    MaterialTheme {
-        val todos = TodoTaskModel(
-            id = 4762,
-            title = "You Have A meeting sfdsf sfsdfsd sdfsdf sfsdf",
-            description = "Lorem ipsum ipsum Lorem ipsum ipsum Lorem ipsum ipsumLorem ipsum ipsum Lorem ipsum ipsum Lorem ipsum ipsumLorem ipsum ipsum Lorem ipsum ipsum",
-            duedate = Converter.toDate(Calendar.getInstance().timeInMillis)!!,
-            colorlabel = "blue",
-            done = true
-        )
-        val todoDisplay = TodoTaskDisplayModel(
-            todoTask = todos,
-            cardColorModel = CardColorModel(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            )
-        )
-
-        TodoListTodayItem(data = todoDisplay)
-    }
-}*/
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewLessThan40() {
     MaterialTheme {
         val todos = TodoTaskModel(
             id = 4762,
@@ -361,6 +407,5 @@ fun PreviewLessThan40() {
         val todoList: MutableList<TodoTaskDisplayModel> = mutableListOf()
         todoList.add(todoDisplay)
         TodoListTodayContent(paddingValues = PaddingValues(16.dp), todoList = todoList)
-
     }
-}
+}*/

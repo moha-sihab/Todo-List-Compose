@@ -12,5 +12,12 @@
     <string name="add_task">Add Task</string>
     <string name="menu_today">Today</string>
     <string name="menu_nextmonth">Next Month</string>
+    <string name="menu_history">History</string>
     <string name="app_bar_title">Todo List</string>
+    <string name="app_bar_next_month_title">Next Month</string>
+    <string name="app_bar_history_title">History</string>
+    <string name="you_have">You Have</string>
+    <string name="total_task">%1$s task(s)</string>
+    <string name="delete">Delete</string>
+    <string name="done">Done</string>
 </resources>
