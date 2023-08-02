@@ -63,6 +63,8 @@ import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getDayOfMon
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getMonthName
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.toDefaultDisplay
 import com.mohasihab.todolistcompose.ui.component.AppTopBar
+import com.mohasihab.todolistcompose.ui.component.EmptyData
+import com.mohasihab.todolistcompose.ui.component.ErrorData
 import com.mohasihab.todolistcompose.ui.component.SwipeBackground
 import com.mohasihab.todolistcompose.ui.navigation.Screen
 import com.mohasihab.todolistcompose.ui.state.UiState
@@ -125,11 +127,11 @@ fun TodoListTodayScreen(
                         }
 
                         is UiState.Empty -> {
-
+                            EmptyData()
                         }
 
                         is UiState.Error -> {
-
+                            ErrorData(message = uiState.message.toString())
                         }
                     }
                 }

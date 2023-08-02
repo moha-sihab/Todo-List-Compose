@@ -20,4 +20,6 @@
     <string name="total_task">%1$s task(s)</string>
     <string name="delete">Delete</string>
     <string name="done">Done</string>
+    <string name="no_data">No Data</string>
+    <string name="error">Error</string>
 </resources>
