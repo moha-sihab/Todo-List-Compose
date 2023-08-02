@@ -1,4 +1,4 @@
-package com.mohasihab.todolistcompose.ui.screen.today
+package com.mohasihab.todolistcompose.ui.screen.nextmonth
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -20,14 +20,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.mohasihab.todolistcompose.R
 import com.mohasihab.todolistcompose.core.domain.model.CardColorModel
 import com.mohasihab.todolistcompose.core.domain.model.TodoTaskDisplayModel
@@ -56,20 +53,17 @@ import com.mohasihab.todolistcompose.core.utils.Converter
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getDayName
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getDayOfMonth
 import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.getMonthName
-import com.mohasihab.todolistcompose.core.utils.DateDisplayFormatter.toDefaultDisplay
 import com.mohasihab.todolistcompose.ui.component.AppTopBar
-import com.mohasihab.todolistcompose.ui.navigation.Screen
 import com.mohasihab.todolistcompose.ui.state.UiState
 import com.mohasihab.todolistcompose.ui.theme.Spacing
 import com.mohasihab.todolistcompose.ui.theme.TodoListComposeTheme
-import com.mohasihab.todolistcompose.ui.theme.md_theme_light_secondary
 import java.util.Calendar
 
 @Composable
-fun TodoListTodayScreen(
+fun TodoListNextMonthScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: TodoListTodayViewModel = hiltViewModel(),
+    viewModel: TodoListNextMonthViewModel = hiltViewModel(),
 ) {
 
     TodoListComposeTheme {
@@ -80,36 +74,16 @@ fun TodoListTodayScreen(
                 )
             },
             containerColor = MaterialTheme.colorScheme.background,
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        Screen.AddTodo.route?.let {
-                            navController.navigate(it) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                        Screen.AddTodo.route?.let { navController.navigate(it) }
-                    },
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
-                }
-            },
         ) {
-            viewModel.getListTodayUiState()
+            viewModel.getListNextMonthUiState()
                 .collectAsState(initial = UiState.Loading()).value.let { uiState ->
                     when (uiState) {
                         is UiState.Loading -> {
-                            viewModel.getTodoListToday()
+                            viewModel.getTodoListNextMonth()
                         }
 
                         is UiState.Success -> {
-                            TodoListTodayContent(
+                            TodoListNextMonthContent(
                                 paddingValues = it,
                                 todoList = uiState.data ?: mutableListOf()
                             )
@@ -131,23 +105,20 @@ fun TodoListTodayScreen(
 }
 
 @Composable
-fun TodoListTodayContent(paddingValues: PaddingValues, todoList: List<TodoTaskDisplayModel>) {
+fun TodoListNextMonthContent(paddingValues: PaddingValues, todoList: List<TodoTaskDisplayModel>) {
     val listState = rememberLazyListState()
     LazyColumn(
         modifier = Modifier.padding(paddingValues),
         state = listState
     ) {
-        item {
-            TodoListTodayHeader(totalTask = todoList.size)
-        }
         items(todoList, key = { it.todoTask.id }) { data ->
-            TodoListTodayItem(data = data)
+            TodoListNextMonthItem(data = data)
         }
     }
 }
 
 @Composable
-fun TodoListTodayItem(data: TodoTaskDisplayModel) {
+fun TodoListNextMonthItem(data: TodoTaskDisplayModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -159,6 +130,9 @@ fun TodoListTodayItem(data: TodoTaskDisplayModel) {
             contentColor = data.cardColorModel.contentColor
         )
     ) {
+        val dayName = data.todoTask.duedate.getDayName()
+        val monthName = data.todoTask.duedate.getMonthName()
+        val todayDate = data.todoTask.duedate.getDayOfMonth()
 
         val limitCharacter = 40
         var descriptionWithLimit = ""
@@ -171,97 +145,6 @@ fun TodoListTodayItem(data: TodoTaskDisplayModel) {
         }
 
         iconExpand = if (expand) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
-
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Spacing().medium),
-            horizontalArrangement = Arrangement.spacedBy(Spacing().small),
-        ) {
-            Text(
-                modifier = Modifier
-                    .weight(2.5f),
-                text = data.todoTask.duedate.toDefaultDisplay(),
-                style = MaterialTheme.typography.bodyLarge,
-                softWrap = true,
-            )
-            Icon(
-                modifier = Modifier.weight(0.2f, fill = true),
-                imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(R.string.content_description_delete_task)
-            )
-        }
-
-        Text(
-            modifier = Modifier
-                .padding(start = Spacing().medium, end = Spacing().medium),
-            text = data.todoTask.title,
-            style = MaterialTheme.typography.headlineMedium,
-            softWrap = true,
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = Spacing().medium,
-                    end = Spacing().medium,
-                    bottom = Spacing().medium
-                )
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessMedium
-                    )
-                ),
-            horizontalArrangement = Arrangement.spacedBy(Spacing().small),
-        ) {
-
-            Text(
-                modifier = Modifier
-                    .weight(2.5f)
-                    .padding(end = Spacing().medium),
-                text = if (expand) data.todoTask.description else descriptionWithLimit,
-                style = MaterialTheme.typography.bodyMedium,
-                softWrap = true,
-            )
-
-            if (data.todoTask.description.length > limitCharacter) {
-                Icon(
-                    modifier = Modifier
-                        .weight(0.2f, fill = true)
-                        .clickable {
-                            expand = !expand
-                        },
-                    imageVector = iconExpand,
-                    contentDescription = stringResource(R.string.content_description_expand_description)
-                )
-            }
-        }
-    }
-
-
-}
-
-
-@Composable
-fun TodoListTodayHeader(totalTask: Int) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 60.dp)
-            .padding(start = Spacing().medium, end = Spacing().medium, top = Spacing().small),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = md_theme_light_secondary,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-        )
-    ) {
-        val dayName = Converter.toDate(Calendar.getInstance().timeInMillis)?.getDayName()!!
-        val monthName = Converter.toDate(Calendar.getInstance().timeInMillis)?.getMonthName()!!
-        val todayDate = Converter.toDate(Calendar.getInstance().timeInMillis)?.getDayOfMonth()!!
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -291,7 +174,7 @@ fun TodoListTodayHeader(totalTask: Int) {
             }
 
             Divider(
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                color = data.cardColorModel.contentColor,
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(1.dp)
@@ -300,48 +183,71 @@ fun TodoListTodayHeader(totalTask: Int) {
                 modifier = Modifier.weight(0.7f),
                 horizontalAlignment = Alignment.Start,
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.content_description_delete_task)
+                    )
+                }
+
                 Text(
-                    text = "You Have",
-                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier
+                        .padding(start = Spacing().medium, end = Spacing().medium),
+                    text = data.todoTask.title,
+                    style = MaterialTheme.typography.headlineSmall,
                     softWrap = true,
                 )
-                Text(
-                    text = "$totalTask task(s)",
-                    style = MaterialTheme.typography.headlineLarge,
-                    softWrap = true,
-                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = Spacing().medium,
+                            end = Spacing().medium,
+                            bottom = Spacing().medium
+                        )
+                        .animateContentSize(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessMedium
+                            )
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing().small),
+                ) {
+
+                    Text(
+                        modifier = Modifier
+                            .weight(2.5f)
+                            .padding(end = Spacing().medium),
+                        text = if (expand) data.todoTask.description else descriptionWithLimit,
+                        style = MaterialTheme.typography.bodyMedium,
+                        softWrap = true,
+                    )
+
+                    if (data.todoTask.description.length > limitCharacter) {
+                        Icon(
+                            modifier = Modifier
+                                .weight(0.2f, fill = true)
+                                .clickable {
+                                    expand = !expand
+                                },
+                            imageVector = iconExpand,
+                            contentDescription = stringResource(R.string.content_description_expand_description)
+                        )
+                    }
+                }
             }
         }
     }
 }
-/*
-@Preview(showSystemUi = true)
-@Composable
-fun TodoListTodayPreview() {
-    MaterialTheme {
-        val todos = TodoTaskModel(
-            id = 4762,
-            title = "You Have A meeting sfdsf sfsdfsd sdfsdf sfsdf",
-            description = "Lorem ipsum ipsum Lorem ipsum ipsum Lorem ipsum ipsumLorem ipsum ipsum Lorem ipsum ipsum Lorem ipsum ipsumLorem ipsum ipsum Lorem ipsum ipsum",
-            duedate = Converter.toDate(Calendar.getInstance().timeInMillis)!!,
-            colorlabel = "blue",
-            done = true
-        )
-        val todoDisplay = TodoTaskDisplayModel(
-            todoTask = todos,
-            cardColorModel = CardColorModel(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            )
-        )
-
-        TodoListTodayItem(data = todoDisplay)
-    }
-}*/
 
 @Preview(showSystemUi = true)
 @Composable
-fun PreviewLessThan40() {
+fun PreviewNextMonth() {
     MaterialTheme {
         val todos = TodoTaskModel(
             id = 4762,
@@ -360,7 +266,7 @@ fun PreviewLessThan40() {
         )
         val todoList: MutableList<TodoTaskDisplayModel> = mutableListOf()
         todoList.add(todoDisplay)
-        TodoListTodayContent(paddingValues = PaddingValues(16.dp), todoList = todoList)
+        TodoListNextMonthContent(paddingValues = PaddingValues(16.dp), todoList = todoList)
 
     }
 }

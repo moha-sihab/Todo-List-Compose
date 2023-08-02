@@ -1,5 +1,6 @@
 package com.mohasihab.todolistcompose.ui.screen.add
 
+import android.util.Log
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -13,12 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,35 +38,50 @@ import com.mohasihab.todolistcompose.ui.component.AppTopBar
 import com.mohasihab.todolistcompose.ui.component.ColorPicker
 import com.mohasihab.todolistcompose.ui.component.DueDate
 import com.mohasihab.todolistcompose.ui.component.TextInput
+import com.mohasihab.todolistcompose.ui.navigation.Screen
 import com.mohasihab.todolistcompose.ui.state.AddTodoEvent
+import com.mohasihab.todolistcompose.ui.state.UiState
 import com.mohasihab.todolistcompose.ui.theme.Spacing
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTodoScreen(
     navController: NavController,
     viewmodel: AddTodoViewModel = hiltViewModel(),
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
             AppTopBar(
                 titleTopBar = stringResource(R.string.add_task),
                 addTodo = true,
-                onCloseClick = { navController.navigateUp() },
+                onCloseClick = { navController.navigate(Screen.TaskToday.route) },
                 onSaveClick = { viewmodel.onEvent(AddTodoEvent.SaveTodo) })
         }
     ) { it ->
-        AddTodoContent(paddingValues = it, viewmodel)
+        AddTodoContent(
+            paddingValues = it,
+            viewmodel,
+            navController = navController,
+            snackbarHostState
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTodoContent(paddingValues: PaddingValues, viewmodel: AddTodoViewModel) {
+fun AddTodoContent(
+    paddingValues: PaddingValues,
+    viewmodel: AddTodoViewModel,
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
+) {
     val colorLabel = viewmodel.addUpdateTodoState.colorLabel
     val containerAnimatable = remember {
         Animatable(
@@ -79,6 +96,26 @@ fun AddTodoContent(paddingValues: PaddingValues, viewmodel: AddTodoViewModel) {
 
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(viewmodel.addUpdateTodoState.actionStatus) {
+        Log.d("addTodo=", "actionStatus=" + viewmodel.addUpdateTodoState.actionStatus.toString())
+        viewmodel.addUpdateTodoState.uiState.collectLatest { uiState ->
+            when (uiState) {
+                is UiState.Success -> {
+                    navController.navigate(Screen.TaskToday.route)
+                }
+
+                is UiState.Error -> {
+                    snackbarHostState.showSnackbar(
+                        message = uiState.message.toString()
+                    )
+                }
+
+                else -> {
+
+                }
+            }
+        }
+    }
 
     //date picker
     val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
@@ -95,7 +132,6 @@ fun AddTodoContent(paddingValues: PaddingValues, viewmodel: AddTodoViewModel) {
             selectedDate = selectedDate.value
         ) { newDate ->
             selectedDate.value = newDate
-            //    val newDateLong = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
             val newDateLong: Date = Date.from(newDate.atStartOfDay(defaultZoneId).toInstant())
             viewmodel.onEvent(AddTodoEvent.InputDueDate(newDateLong))
         },
@@ -126,21 +162,21 @@ fun AddTodoContent(paddingValues: PaddingValues, viewmodel: AddTodoViewModel) {
                 }
             )
             ColorPicker(modifier = Modifier.weight(0.5f), onClick = {
-                viewmodel.onEvent(AddTodoEvent.InputColorLabel(it))
                 scope.launch {
                     containerAnimatable.animateTo(
-                        targetValue = colorLabel.toTaskColor().containerColor,
+                        targetValue = it.toTaskColor().containerColor,
                         animationSpec = tween(
-                            durationMillis = 500
+                            durationMillis = 100
                         )
                     )
                     contentAnimatable.animateTo(
-                        targetValue = colorLabel.toTaskColor().contentColor,
+                        targetValue = it.toTaskColor().contentColor,
                         animationSpec = tween(
-                            durationMillis = 500
+                            durationMillis = 100
                         )
                     )
                 }
+                viewmodel.onEvent(AddTodoEvent.InputColorLabel(it))
             })
         }
 

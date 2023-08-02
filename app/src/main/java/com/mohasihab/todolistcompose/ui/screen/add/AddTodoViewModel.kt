@@ -70,13 +70,13 @@ class AddTodoViewModel @Inject constructor(private val useCase: TodoTaskUseCaseC
                         useCase.addTask(todo)
                         addTodoUiState.emit(UiState.Success(""))
                         addUpdateTodoState = addUpdateTodoState.copy(
-                            uiState = addTodoUiState.value,
+                            uiState = addTodoUiState,
                             actionStatus = true
                         )
                     } catch (e: Exception) {
                         addTodoUiState.emit(UiState.Error(message = e.message.toString()))
                         addUpdateTodoState = addUpdateTodoState.copy(
-                            uiState = addTodoUiState.value,
+                            uiState = addTodoUiState,
                             actionStatus = false
                         )
                     }

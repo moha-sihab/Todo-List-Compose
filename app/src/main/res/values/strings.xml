@@ -12,4 +12,5 @@
     <string name="add_task">Add Task</string>
     <string name="menu_today">Today</string>
     <string name="menu_nextmonth">Next Month</string>
+    <string name="app_bar_title">Todo List</string>
 </resources>

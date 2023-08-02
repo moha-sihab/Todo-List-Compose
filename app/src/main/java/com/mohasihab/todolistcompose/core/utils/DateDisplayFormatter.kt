@@ -25,6 +25,34 @@ object DateDisplayFormatter {
     fun SimpleDateFormat.formatterMonth(): SimpleDateFormat =
         SimpleDateFormat("MMM", Locale.ENGLISH)
 
+    fun SimpleDateFormat.formatterDay(): SimpleDateFormat =
+        SimpleDateFormat("EEEE", Locale.ENGLISH)
+
+    fun SimpleDateFormat.formatterDayOfMonth(): SimpleDateFormat =
+        SimpleDateFormat("dd", Locale.ENGLISH)
+
+    fun Date.getDayName() : String{
+        val vDateFormat: SimpleDateFormat = SimpleDateFormat().formatterDay()
+        var vDateResult = ""
+        vDateResult = vDateFormat.format(this).toString()
+        return vDateResult
+    }
+
+    fun Date.getMonthName(): String {
+        val vMonthFormat: SimpleDateFormat = SimpleDateFormat().formatterMonth()
+        var vMonthResult = ""
+        vMonthResult = vMonthFormat.format(this).toString()
+        return vMonthResult
+    }
+
+    fun Date.getDayOfMonth(): String {
+        val vDayOfMonth: SimpleDateFormat = SimpleDateFormat().formatterDayOfMonth()
+        var vDayResult = ""
+        vDayResult = vDayOfMonth.format(this).toString()
+        return vDayResult
+    }
+
+
     fun fromStringToDateLong(dateString: String): Long {
         var vDateLong: Long = 0
         try {

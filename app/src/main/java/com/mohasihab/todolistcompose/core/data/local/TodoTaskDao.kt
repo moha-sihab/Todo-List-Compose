@@ -26,10 +26,10 @@ interface TodoTaskDao {
     @Query("select * from table_todo")
     suspend fun getAllTask(): List<TodoTaskEntity>
 
-    @Query("select * from table_todo where strftime('%Y-%m-%d', datetime(duedate/1000, 'unixepoch','localtime'))=date('now','localtime')")
+    @Query("select * from table_todo where strftime('%Y-%m-%d', datetime(duedate/1000, 'unixepoch','localtime'))=date('now','localtime') order by id desc")
     suspend fun getTaskToday(): List<TodoTaskEntity>
 
-    @Query("select  *  from table_todo where  strftime('%m', datetime(duedate/1000, 'unixepoch','localtime')) =  strftime('%m',datetime('now', 'localtime', '+1 month'))")
+    @Query("select  *  from table_todo where  strftime('%m', datetime(duedate/1000, 'unixepoch','localtime')) =  strftime('%m',datetime('now', 'localtime', '+1 month')) order by id desc")
     suspend fun getTaskNextMonth(): List<TodoTaskEntity>
 
 }
